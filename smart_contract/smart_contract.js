@@ -1,87 +1,21 @@
-const { Client, AccountBalanceQuery, Hbar, AccountCreateTransaction, TransferTransaction } = require("@hashgraph/sdk");
+function getAccountBalance(totalFunds, ADonors, BDonors, CDonors) {
+    // Calculate the matching fund for each donor
+    const totalDonors = ADonors + BDonors + CDonors;
+    const projectA = (ADonors / totalDonors) * (totalFunds);
 
-class HederaSmartContract {
-    constructor() {
-        this.client = Client.forTestnet(); // Replace with appropriate network client setup
-        this.operatorKey = process.env.OPERATOR_KEY; // Replace with your operator key
-        this.operatorId = process.env.OPERATOR_ID; // Replace with your operator ID
-        this.contractAccount = null;
-    }
+    const projectB = (BDonors / totalDonors) * (totalFunds);
 
-    async setupContract() {
-        try {
-            const operatorId = this.operatorId;
-            const operatorKey = this.operatorKey;
+    const projectC = (CDonors / totalDonors) * (totalFunds);
 
-            this.client.setOperator(operatorId, operatorKey);
+    // Calculate the total funding for the project
+    const projectFunding = matchingFund * numberOfDonors * numberOfDonors;
 
-            const receipt = await new AccountCreateTransaction()
-                .setKey(operatorKey)
-                .execute(this.client);
-
-            const newAccountId = receipt.getAccountId();
-            console.log(`Contract account created: ${newAccountId}`);
-
-            this.contractAccount = newAccountId;
-        } catch (error) {
-            console.error("Error setting up contract:", error);
-        }
-    }
-
-    async getContractBalance() {
-        try {
-            const balance = await new AccountBalanceQuery()
-                .setAccountId(this.contractAccount)
-                .execute(this.client);
-
-            return balance.hbars.toTinybars(); // Convert to smallest unit (tinybars)
-        } catch (error) {
-            console.error("Error getting contract balance:", error);
-        }
-    }
-
-    async receiveFunds(amount) {
-        try {
-            const transferTransaction = await new TransferTransaction()
-                .addHbarTransfer(this.client.operatorAccountId, new Hbar(amount))
-                .addHbarTransfer(this.contractAccount, new Hbar(-amount))
-                .execute(this.client);
-
-            console.log(`Received ${amount} Hedera coins. Transaction ID: ${transferTransaction.transactionId}`);
-        } catch (error) {
-            console.error("Error receiving funds:", error);
-        }
-    }
-
-    async transferFunds(amount, recipientAccountId) {
-        try {
-            const transferTransaction = await new TransferTransaction()
-                .addHbarTransfer(this.contractAccount, new Hbar(-amount))
-                .addHbarTransfer(recipientAccountId, new Hbar(amount))
-                .execute(this.client);
-
-            console.log(`Transferred ${amount} Hedera coins to ${recipientAccountId}. Transaction ID: ${transferTransaction.transactionId}`);
-        } catch (error) {
-            console.error("Error transferring funds:", error);
-        }
-    }
+    return projectFunding;
 }
 
 // Example usage
-(async () => {
-    const contract = new HederaSmartContract();
+const totalFundsAvailable = 10000; // Total funds available for distribution
+const numberOfDonorsForProject = 50; // Number of donors for a specific project
 
-    // Setup contract account
-    await contract.setupContract();
-
-    // Get contract balance
-    const contractBalance = await contract.getContractBalance();
-    console.log(`Contract balance: ${contractBalance} tinybars`);
-
-    // Simulating receiving funds
-    await contract.receiveFunds(100);
-
-    // Simulating transferring funds to a recipient account
-    const recipientAccountId = 'RECIPIENT_ACCOUNT_ID'; // Replace with recipient's account ID
-    await contract.transferFunds(50, recipientAccountId);
-})();
+const projectFunding = calculateQuadraticFunding(totalFundsAvailable, numberOfDonorsForProject);
+console.log(`The project receives $${projectFunding.toFixed(2)} based on quadratic funding.`);
