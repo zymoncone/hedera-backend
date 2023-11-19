@@ -7,15 +7,16 @@ function getAccountBalance(totalFunds, ADonors, BDonors, CDonors) {
 
     const projectC = (CDonors / totalDonors) * (totalFunds);
 
-    // Calculate the total funding for the project
-    const projectFunding = matchingFund * numberOfDonors * numberOfDonors;
 
-    return projectFunding;
+    // Calculate the total funding for the project
+    // const projectFunding = matchingFund * numberOfDonors * numberOfDonors;
+
+    return projectA, projectB, projectC;
 }
 
-// Example usage
-const totalFundsAvailable = 10000; // Total funds available for distribution
-const numberOfDonorsForProject = 50; // Number of donors for a specific project
+// // Example usage
+// const totalFundsAvailable = 10000; // Total funds available for distribution
+// const numberOfDonorsForProject = 50; // Number of donors for a specific project
 
-const projectFunding = calculateQuadraticFunding(totalFundsAvailable, numberOfDonorsForProject);
-console.log(`The project receives $${projectFunding.toFixed(2)} based on quadratic funding.`);
+// const projectFunding = calculateQuadraticFunding(totalFundsAvailable, numberOfDonorsForProject);
+// console.log(`The project receives $${projectFunding.toFixed(2)} based on quadratic funding.`);
